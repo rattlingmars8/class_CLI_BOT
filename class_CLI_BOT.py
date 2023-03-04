@@ -27,55 +27,56 @@ class Name(Field):
 
 
 class Phone(Field):
-    def __init__(self, value=None):
-        if value:
-            value = normal_phone(value)
+    def __init__(self, value): # Для створення екземпляру цього класу, значення обов'язкове
+        value = normal_phone(value) # трохи поспішили) такі перевірки робляться в сеттерах )
         super().__init__(value)
 
-    def __iter__(self):
-        return iter(str(self.value))
+    # def __iter__(self):
+    #     return iter(str(self.value))  Навіщо тут iter?
     
 
 class Record():
-    def __init__(self, name, phone = None):
-        self.name = Name(name)
+    def __init__(self, name:Name, phone:Phone = None):
+        self.name = name # Екземпляри класів повинні створюватись явно, тому тут помилка
         if phone:
             # self.data = {self.name}
         # else:
         
-            self.phone = [Phone(phone)]
+            self.phones = [phone]
+        else:
+            self.phones = []
         
             # self.data = {self.name: self.phone}
 
     # def __repr__(self) -> str:
     #     return f'{self.data}'
     
-    def add_phone(self, other_phone):
-        try:
-            self.phone.append(Phone(other_phone))
-        except ValueError:
-            return "You've enter an invalid phone number. Try again"
+    def add_phone(self, other_phone: Phone):
+        # try: При явному створенні екземпляру Phone ця помилка виникне ще на етапі його створення
+        self.phones.append(other_phone) 
+        # except ValueError:
+        #     return "You've enter an invalid phone number. Try again"
         
     # def del_phone(self, phone):
     #     for p in self.phone:
     #         if p == phone:
     #             self.phone.remove(phone)
 
-    def del_phone(self, phone):
-        for i, p in enumerate(self.phone):
-            if p.value == phone:
-                return self.phone.pop(i)
+    def del_phone(self, phone:Phone):
+        for i, p in enumerate(self.phones):
+            if p.value == phone.value:
+                return self.phones.pop(i)
             
-    def change_phone(self, old_phone, new_phone):
+    def change_phone(self, old_phone: Phone, new_phone: Phone):
         if self.del_phone(old_phone):
             self.add_phone(new_phone)
 
     def __repr__(self) -> str:
-        try:
+        # try:
             # return ', '.join([p.value for p in self.phone])
-            return f'{self.phone}'
-        except AttributeError:
-            return ""
+            return f'{self.phones}'
+        # except AttributeError: phones повинен створитись при створенні екземпляру класу Record 
+        #     return ""
         
         
 class AddressBook(UserDict):
@@ -89,6 +90,8 @@ class AddressBook(UserDict):
                     print(f'Контакт з іменем "{name}" і номером телефону "{phone.value}" вже існує, тому він не був доданий до телефонної книги')
                 else:
                     existing_record.add_phone(phone.value)
+            # так не годиться працювати з класами - це не відповідальність класу AddressBook 
+            # працювати з функціональністю класу Record
         else:
             self.data[name] = record
 
@@ -96,8 +99,8 @@ class AddressBook(UserDict):
 if __name__ == "__main__":
     book = AddressBook()
     name = Name('Vladik')
-    record1 = Record(name, '0731404451')
-    record1.add_phone('0930030322')
+    record1 = Record(name, Phone('0731404451'))
+    record1.add_phone(Phone('0930030322'))
     book.add_record(record1)
-    record1.del_phone('+380930030322')
+    record1.del_phone(Phone('+380930030322'))
     print(book)
