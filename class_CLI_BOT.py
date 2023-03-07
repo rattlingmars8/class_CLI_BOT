@@ -93,6 +93,7 @@ def hello(*args):
 
 
 # fnc to add a new contact to the phonebook
+@input_error
 def add_contact(*args):
     name = Name(args[0])
     if name.value in contacts.keys():
@@ -108,33 +109,13 @@ def add_contact(*args):
             return f"{name} with {phone} has been added to the phonebook"
         return f"{name} has been added to the phonebook"
 
+@input_error
 def show_all(*args):
     all_contacts = ""
     for name, record in contacts.items():
         all_contacts += f'{record}\n'
     return all_contacts
 
-# def change_phone(*args):
-#     record = contacts.get(args[0])
-#     for i, number in enumerate([phone.value for phone in record.phones], 0): 
-#             print(f'{i}: {number}')
-#     while True: 
-#         try:        
-#             pos = int(input('Enter the index of a phone you want to edit >>> '))
-#             if pos > len(record.phones)-1:
-#                 raise IndexError
-#         except IndexError:
-#             return pos = int(input('Wrong index. Enter the index of a phone you want to edit >>> '))
-#         except ValueError:
-#             return pos = int(input('Wrong index. Enter the index of a phone you want to edit >>> '))
-#         user_input = input('Enter new phone num for this contact >>>> ')
-#         try:
-#             new_phone = Phone(user_input)
-#             break
-#         except ValueError:
-#             return "Enter valid phone"
-#     record.change_phone(pos, new_phone)
-#     return f"Phone was changed on {new_phone}"
 @input_error
 def change_phone(*args):
     record = contacts.get(args[0])
