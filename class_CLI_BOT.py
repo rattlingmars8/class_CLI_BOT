@@ -13,8 +13,8 @@ class Name(Field):
     pass
 
 class Phone(Field):
-    def __init__(self, value):
-        self._value = self.normal_phone(value)
+    def __init__(self, value=""):
+        self.set_value(value)
 
     def normal_phone(self, phone: str):
         digits = [char for char in phone if char.isdigit()]
@@ -27,16 +27,8 @@ class Phone(Field):
         else:
             raise ValueError("Invalid phone number")
 
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value = self.normal_phone(value)
-
-    def __str__(self):
-        return self._value
+    def set_value(self, phone):
+        self.value = self.normal_phone(phone)
 
 class Record():
     def __init__(self, name:Name, phone:Phone=None):
